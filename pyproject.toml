@@ -26,7 +26,7 @@ testpaths = ["tests"]
 [tool.cibuildwheel]
 build-verbosity = 1
 before-build = "sh -c 'set -eux; if [ -f /etc/alpine-release ]; then apk add --no-cache build-base go; fi; make clean; make'"
-before-test = "sh -c 'set -eux; python -c \"import pyyescrypt, pathlib; p=pathlib.Path(pyyescrypt.__file__).resolve().parent/\"_native\"; print(p); print(list(p.glob(\"**/*.so\")));\"; for f in $(python -c \"import pyyescrypt, pathlib; p=pathlib.Path(pyyescrypt.__file__).resolve().parent/'_native'; import glob; print(' '.join(glob.glob(str(p/'**/*.so'), recursive=True)))\"); do echo FILE=$f; file $f || true; ldd $f || true; done'"
+before-test = "sh -c './tools/inspect-native.sh'"
 test-command = "python -m pytest -q"
 test-requires = ["pytest"]
 
