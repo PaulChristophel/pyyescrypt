@@ -30,6 +30,7 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel --output-dir dist
         env:
+          CIBW_ENVIRONMENT_LINUX: 'PATH=/usr/local/go/bin:$PATH GO=/usr/local/go/bin/go'
           # Run tests from the project checkout, not the temp test dir
           CIBW_TEST_COMMAND: "python -m pytest -q {project}/tests"
           CIBW_TEST_REQUIRES: "pytest"

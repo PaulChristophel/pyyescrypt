@@ -1,6 +1,7 @@
 import os
 import platform
 import subprocess
+import shutil
 from pathlib import Path
 
 from setuptools import Extension, setup
@@ -10,6 +11,19 @@ from setuptools.command.build_py import build_py as _build_py
 ROOT = Path(__file__).resolve().parent
 PKG_NAME = "pyyescrypt"
 NATIVE_SUBDIR = "_native"
+
+
+def _go_exe() -> str:
+    # Allow callers (cibuildwheel, CI, local) to pin an absolute path.
+    go = os.environ.get("GO", "go")
+    if os.path.isabs(go):
+        return go
+    found = shutil.which(go)
+    if not found:
+        raise RuntimeError(
+            f"Go toolchain not found on PATH (tried '{go}'). Set GO=/path/to/go or fix PATH."
+        )
+    return found
 
 
 def _lib_filename() -> str:
@@ -25,11 +39,12 @@ def _build_native_to(dir_path: Path) -> None:
     dir_path.mkdir(parents=True, exist_ok=True)
     out_path = dir_path / _lib_filename()
 
+    go = _go_exe()
     env = os.environ.copy()
     env["CGO_ENABLED"] = "1"
 
     subprocess.check_call(
-        ["go", "build", "-buildmode=c-shared", "-o", str(out_path), "./capi"],
+        [go, "build", "-buildmode=c-shared", "-o", str(out_path), "./capi"],
         cwd=str(ROOT),
         env=env,
     )
