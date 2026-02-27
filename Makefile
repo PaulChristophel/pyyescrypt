@@ -85,7 +85,10 @@ upgrade:
 clean:
 	rm -rf build dist *.egg-info
 	rm -rf src/*.egg-info src/*/*.egg-info
-	rm -rf "$(PKG_NATIVE_DIR)"
+	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.dylib"
+	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.dll"
+	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.so"
+	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.h"
 	rm -rf src/pyyescrypt/__pycache__
 	rm -rf src/pyyescrypt/*.so
 	rm -rf tests/__pycache__

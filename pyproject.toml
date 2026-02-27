@@ -15,9 +15,10 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["pyyescrypt", "pyyescrypt.*"]
 
 [tool.setuptools.package-data]
-pyyescrypt = ["_native/*"]
+pyyescrypt = ["py.typed", "_native/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
