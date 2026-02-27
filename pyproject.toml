@@ -20,10 +20,11 @@ license-files = []
 
 [tool.setuptools.packages.find]
 where = ["src"]
-exclude = ["pyyescrypt._native", "pyyescrypt._native.*"]
+include = ["pyyescrypt", "pyyescrypt.*"]
 
 [tool.setuptools.package-data]
 pyyescrypt = ["py.typed", "_native/**/*"]
+"pyyescrypt._native" = ["*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
