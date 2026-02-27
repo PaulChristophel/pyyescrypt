@@ -16,6 +16,7 @@ classifiers = [
 ]
 [tool.setuptools]
 package-dir = {"" = "src"}
+license-files = []
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -35,7 +36,7 @@ test-command = "sh -c './tools/inspect-native.sh && python -m pytest -q'"
 test-requires = ["pytest"]
 
 # Only build CPython wheels
-build = "cp3?-*"
+build = "cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
 
 [tool.cibuildwheel.linux]
 skip = ["*-musllinux_*"]
