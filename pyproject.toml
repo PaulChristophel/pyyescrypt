@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyyescrypt"
+version = "0.1.0"
+description = "Python bindings for yescrypt using a tiny Go shared library"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "GPL-3.0-or-later"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+pyyescrypt = ["_native/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.cibuildwheel]
+build-verbosity = 1
+test-command = "python -m pytest -q"
+test-requires = ["pytest"]
+
+# Only build CPython wheels
+build = "cp3?-*"
+
+[tool.cibuildwheel.linux]
+# Build both glibc and musl wheels
+archs = ["x86_64", "aarch64"]
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-aarch64-image = "manylinux_2_28"
+musllinux-x86_64-image = "musllinux_1_2"
+musllinux-aarch64-image = "musllinux_1_2"
