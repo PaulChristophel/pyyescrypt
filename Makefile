@@ -83,14 +83,14 @@ upgrade:
 	$(GO) mod tidy
 
 clean:
-	rm -rf build dist *.egg-info
-	rm -rf src/*.egg-info src/*/*.egg-info
+	rm -rf "$(ROOT)/build dist *.egg-info"
+	rm -rf "$(ROOT)/src/*.egg-info src/*/*.egg-info"
+	rm -rf "$(ROOT)/src/pyyescrypt/__pycache__"
+	rm -rf "$(ROOT)/src/pyyescrypt/*.so"
+	rm -rf "$(ROOT)/tests/__pycache__"
+	rm -rf "$(ROOT)/.pytest_cache"
+	rm -rf "$(ROOT)/.venv"
 	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.dylib"
 	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.dll"
 	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.so"
 	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.h"
-	rm -rf src/pyyescrypt/__pycache__
-	rm -rf src/pyyescrypt/*.so
-	rm -rf tests/__pycache__
-	rm -rf .pytest_cache
-	rm -rf .venv
