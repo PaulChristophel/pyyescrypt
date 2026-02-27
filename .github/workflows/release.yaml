@@ -1,4 +1,4 @@
-name: wheels
+name: release
 
 on:
   push:
@@ -81,3 +81,36 @@ jobs:
         with:
           name: sdist
           path: dist/*.tar.gz
+
+  publish_pypi:
+    name: Publish to PyPI
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist_artifacts
+
+      - name: Collect dists
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          find dist_artifacts -type f \( -name "*.whl" -o -name "*.tar.gz" \) -print -exec cp -v {} dist/ \;
+
+      - name: Check artifacts
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip twine
+          python -m twine check dist/*
+
+      - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade twine
+          python -m twine upload dist/*
