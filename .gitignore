@@ -224,6 +224,7 @@ __marimo__/
 *.dll
 *.so
 *.dylib
+*.h
 
 # Test binary, built with `go test -c`
 *.test
