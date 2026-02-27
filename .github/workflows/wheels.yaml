@@ -1,9 +1,7 @@
 name: wheels
 
 on:
-  push:
-    tags:
-      - "v*"
+  push: {}
   workflow_dispatch: {}
 
 jobs:
