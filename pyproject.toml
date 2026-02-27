@@ -24,6 +24,7 @@ pyyescrypt = ["py.typed", "_native/**/*"]
 testpaths = ["tests"]
 
 [tool.cibuildwheel]
+skip = ["*-win32", "*-win_amd64", "*-win_arm64"]
 build-verbosity = 1
 before-build = "sh -c 'set -eux; make clean; make'"
 test-command = "sh -c './tools/inspect-native.sh && python -m pytest -q'"
@@ -37,5 +38,5 @@ build = "cp3?-*"
 # archs = ["x86_64", "aarch64"]
 manylinux-x86_64-image = "manylinux_2_28"
 manylinux-aarch64-image = "manylinux_2_28"
-musllinux-x86_64-image = "musllinux_1_2"
-musllinux-aarch64-image = "musllinux_1_2"
+# musllinux-x86_64-image = "musllinux_1_2"
+# musllinux-aarch64-image = "musllinux_1_2"
