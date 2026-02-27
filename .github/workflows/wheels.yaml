@@ -2,8 +2,10 @@ name: wheels
 
 on:
   push:
-    tags:
-      - "!v*"
+    branches:
+      - "**"
+    tags-ignore:
+      - "v*"
   workflow_dispatch: {}
 
 jobs:
