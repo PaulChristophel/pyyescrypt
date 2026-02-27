@@ -34,6 +34,7 @@ test-requires = ["pytest"]
 build = "cp3?-*"
 
 [tool.cibuildwheel.linux]
+skip = ["*-musllinux_*"]
 # Build both glibc and musl wheels
 # archs = ["x86_64", "aarch64"]
 manylinux-x86_64-image = "manylinux_2_28"
