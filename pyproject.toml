@@ -33,7 +33,7 @@ build = "cp3?-*"
 
 [tool.cibuildwheel.linux]
 # Build both glibc and musl wheels
-archs = ["x86_64", "aarch64"]
+# archs = ["x86_64", "aarch64"]
 manylinux-x86_64-image = "manylinux_2_28"
 manylinux-aarch64-image = "manylinux_2_28"
 musllinux-x86_64-image = "musllinux_1_2"
