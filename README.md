@@ -5,8 +5,10 @@ Python bindings for yescrypt, implemented as a small Go shared library loaded vi
 No CPython C extension code. The Python package is pure Python, plus a platform-specific shared library:
 
 - macOS: `libyescrypt.dylib`
-- Linux: `libyescrypt.so`
-- Windows: `yescrypt.dll`
+- Linux (glibc): `libyescrypt.so`
+
+Windows is currently unsupported because the Go-based build has only been
+validated on macOS and glibc-based Linux.
 
 ## Public API
 
@@ -74,13 +76,14 @@ CPython extension modules require a C ABI boundary anyway. This project avoids t
 ### Memory ownership
 Native functions return `char*` allocated by the native library. Python must free them by calling `yc_free`. The Python wrapper handles this.
 
-### musl support (Alpine)
-This approach works on musl if you compile the shared library against musl and build `musllinux` wheels.
-
-Practical pattern:
-- Build inside an Alpine container (or with a musl toolchain)
-- Ensure `CGO_ENABLED=1` and `CC` points to a musl-capable compiler
-- Produce a `musllinux_*` wheel containing the shared library
+### Linux libc notes
+glibc-based distros (manylinux wheels) are fully supported today. Musl-based
+systems such as Alpine cannot load the Go-built shared library because Go
+currently emits `initial-exec` TLS relocations for `-buildmode=c-shared`, which
+musl's dynamic loader refuses. Installing the wheel on Alpine succeeds, but
+`import pyyescrypt` raises an `OSError` at load time. Until upstream Go gains a
+musl-friendly TLS mode, use the CLI variant (or another glibc environment) if
+you need yescrypt on Alpine.
 
 ### Packaging
 The wheel must include the shared library under `pyyescrypt/_native/`.
