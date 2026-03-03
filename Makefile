@@ -83,14 +83,27 @@ upgrade:
 	$(GO) mod tidy
 
 clean:
-	rm -rf "$(ROOT)/build dist *.egg-info"
-	rm -rf "$(ROOT)/src/*.egg-info src/*/*.egg-info"
-	rm -rf "$(ROOT)/src/pyyescrypt/__pycache__"
-	rm -rf "$(ROOT)/src/pyyescrypt/*.so"
-	rm -rf "$(ROOT)/tests/__pycache__"
-	rm -rf "$(ROOT)/.pytest_cache"
-	rm -rf "$(ROOT)/.venv"
-	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.dylib"
-	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.dll"
-	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.so"
-	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.h"
+# 	find "$(ROOT)" -depth -type f -name '*.whl' -delete
+# 	find "$(ROOT)" -depth -type f -name '*.so' -delete
+# 	find "$(ROOT)" -depth -type f -name '*.dll' -delete
+# 	find "$(ROOT)" -depth -type f -name '*.dylib' -delete
+# 	find "$(ROOT)" -depth -type f -name '*.h' -delete
+	find "$(ROOT)" -depth -type d -name '__pycache__' -ls -exec rm -rf {} \;
+	find "$(ROOT)" -depth -type d -name 'pyyescrypt.egg-info' -ls -exec rm -rf {} \;
+	find "$(ROOT)" -depth -maxdepth 1 -type d -name 'dist' -ls -exec rm -rf {} \;
+	find "$(ROOT)" -depth -maxdepth 1 -type d -name 'build' -ls -exec rm -rf {} \;
+	find "$(ROOT)" -depth -maxdepth 1 -type d -name '.venv' -ls -exec rm -rf {} \;
+	find "$(ROOT)" -depth -maxdepth 1 -type d -name '.pytest_cache' -ls -exec rm -rf {} \;
+
+# 	rm -rf "$(ROOT)/build"
+# 	rm -rf "$(ROOT)/src/pyyescrypt.egg-info"
+# 	rm -rf "$(ROOT)/src/pyyescrypt/*.so"
+# 	rm -rf "$(ROOT)/tests/__pycache__"
+# 	rm -rf "$(ROOT)/.pytest_cache"
+# 	rm -rf "$(ROOT)/.venv"
+# 	rm -rf "$(ROOT)/build"
+# 	rm -rf "$(ROOT)/dist"
+# 	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.dylib"
+# 	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.dll"
+# 	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.so"
+# 	rm -rf "$(PKG_NATIVE_DIR)/libyescrypt.h"
