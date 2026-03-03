@@ -36,22 +36,18 @@ native:
 	mkdir -p "$(PKG_NATIVE_DIR)"
 	CGO_ENABLED=1 $(GO) build -buildmode=c-shared -o "$(LIBOUT)" "$(CAPIDIR)"
 
-py-build:
-	$(MAKE) venv
+py-build: venv
 	"$(VENV_PY)" -m pip install -q --upgrade build
 	"$(VENV_PY)" -m build --wheel
 
-py-sdist:
-	$(MAKE) venv
+py-sdist: venv
 	"$(VENV_PY)" -m pip install -q --upgrade build
 	"$(VENV_PY)" -m build --sdist
 
-py-install:
-	$(MAKE) venv
+py-install: venv
 	"$(VENV_PIP)" install -q .
 
-py-editable:
-	$(MAKE) venv
+py-editable: venv
 	"$(VENV_PIP)" install -q -e .
 
 test:
