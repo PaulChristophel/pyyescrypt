@@ -248,3 +248,4 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+src/pyyescrypt/_cli/pyyescrypt-cli

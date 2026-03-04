@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	pyyescrypt "github.com/PaulChristophel/pyyescrypt/internal/pyyescrypt"
 )
@@ -33,7 +34,7 @@ func readPasswordFromStdin() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(data), nil
+	return strings.TrimRight(string(data), "\r\n"), nil
 }
 
 func runGenerate() {

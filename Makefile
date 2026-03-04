@@ -97,8 +97,6 @@ clean:
 	find "$(ROOT)" -depth -maxdepth 1 -type d -name 'build' -ls -exec rm -rf {} \;
 	find "$(ROOT)" -depth -maxdepth 1 -type d -name '.venv' -ls -exec rm -rf {} \;
 	find "$(ROOT)" -depth -maxdepth 1 -type d -name '.pytest_cache' -ls -exec rm -rf {} \;
-	rm -rf "$(PKG_NATIVE_DIR)"
-	rm -rf "$(PKG_CLI_DIR)"
 
 # 	rm -rf "$(ROOT)/build"
 # 	rm -rf "$(ROOT)/src/pyyescrypt.egg-info"
