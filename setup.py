@@ -24,8 +24,10 @@ def _apply_macos_env(env: dict) -> None:
     target = _macos_target()
     env["MACOSX_DEPLOYMENT_TARGET"] = target
     flag = f"-mmacosx-version-min={target}"
-    env["CGO_CFLAGS"] = f"{env.get('CGO_CFLAGS', '').strip()} {flag}".strip()
-    env["CGO_LDFLAGS"] = f"{env.get('CGO_LDFLAGS', '').strip()} {flag}".strip()
+    env.setdefault("CC", "clang")
+    env.setdefault("CXX", "clang++")
+    env["CGO_CFLAGS"] = " ".join(part for part in (env.get("CGO_CFLAGS", ""), flag) if part).strip()
+    env["CGO_LDFLAGS"] = " ".join(part for part in (env.get("CGO_LDFLAGS", ""), flag) if part).strip()
 
 
 def _go_exe() -> str:
