@@ -47,7 +47,7 @@ def _build_native_to(dir_path: Path) -> None:
     go = _go_exe()
     env = os.environ.copy()
     env["CGO_ENABLED"] = "1"
-
+    env.setdefault("MACOSX_DEPLOYMENT_TARGET", "11.0")
     subprocess.check_call(
         [go, "build", "-buildmode=c-shared", "-o", str(out_path), "./capi"],
         cwd=str(ROOT),
@@ -61,6 +61,7 @@ def _build_cli_to(dir_path: Path) -> None:
 
     go = _go_exe()
     env = os.environ.copy()
+    env.setdefault("MACOSX_DEPLOYMENT_TARGET", "11.0")
     subprocess.check_call(
         [go, "build", "-o", str(out_path), "./cmd/pyyescrypt-cli"],
         cwd=str(ROOT),

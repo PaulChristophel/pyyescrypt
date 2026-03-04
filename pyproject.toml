@@ -37,8 +37,9 @@ test-requires = ["pytest"]
 build = "cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
 
 [tool.cibuildwheel.linux]
-archs = ["x86_64", "aarch64"]
+# archs = ["x86_64", "aarch64"]
+archs = ["x86_64"]
 manylinux-x86_64-image = "manylinux_2_28"
-manylinux-aarch64-image = "manylinux_2_28"
+# manylinux-aarch64-image = "manylinux_2_28"
 musllinux-x86_64-image = "musllinux_1_2"
-musllinux-aarch64-image = "musllinux_1_2"
+# musllinux-aarch64-image = "musllinux_1_2"
