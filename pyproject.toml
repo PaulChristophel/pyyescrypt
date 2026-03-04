@@ -21,7 +21,7 @@ where = ["src"]
 include = ["pyyescrypt", "pyyescrypt.*"]
 
 [tool.setuptools.package-data]
-pyyescrypt = ["py.typed", "_native/**/*"]
+pyyescrypt = ["py.typed", "_native/**/*", "_cli/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -225,6 +225,8 @@ __marimo__/
 *.so
 *.dylib
 *.h
+src/pyyescrypt/_native/
+src/pyyescrypt/_cli/
 
 # Test binary, built with `go test -c`
 *.test

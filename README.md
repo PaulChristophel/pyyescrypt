@@ -47,7 +47,14 @@ This builds the shared library into:
 
 - `src/pyyescrypt/_native/libyescrypt.dylib` on macOS
 - `src/pyyescrypt/_native/libyescrypt.so` on Linux
-- `src/pyyescrypt/_native/yescrypt.dll` on Windows
+
+To build the bundled CLI (used automatically on musl) run:
+
+```bash
+make cli
+```
+
+which outputs `src/pyyescrypt/_cli/pyyescrypt-cli`.
 
 ## Run tests
 
@@ -80,10 +87,13 @@ Native functions return `char*` allocated by the native library. Python must fre
 glibc-based distros (manylinux wheels) are fully supported today. Musl-based
 systems such as Alpine cannot load the Go-built shared library because Go
 currently emits `initial-exec` TLS relocations for `-buildmode=c-shared`, which
-musl's dynamic loader refuses. Installing the wheel on Alpine succeeds, but
-`import pyyescrypt` raises an `OSError` at load time. Until upstream Go gains a
-musl-friendly TLS mode, use the CLI variant (or another glibc environment) if
-you need yescrypt on Alpine.
+musl's dynamic loader refuses. Installing the wheel on Alpine succeeds, but the
+native backend fails to import.
+
+The package now ships a small Go CLI binary that the Python module falls back
+to automatically whenever the native backend cannot be loaded (or when
+`PYYESCRYPT_BACKEND=cli` is set). Set `PYYESCRYPT_BACKEND=native` if you prefer
+to fail fast when the shared library is unavailable.
 
 ### Packaging
 The wheel must include the shared library under `pyyescrypt/_native/`.

@@ -8,7 +8,7 @@ import "C"
 import (
 	"unsafe"
 
-	yescrypt "github.com/openwall/yescrypt-go"
+	pyyescrypt "github.com/PaulChristophel/pyyescrypt/internal/pyyescrypt"
 )
 
 //export yc_generate_hash
@@ -23,16 +23,7 @@ func yc_generate_hash(password *C.char, errOut **C.char) *C.char {
 		return nil
 	}
 
-	salt, err := generateSaltCryptoRand(16)
-	if err != nil {
-		if errOut != nil {
-			*errOut = C.CString(err.Error())
-		}
-		return nil
-	}
-	setting := "$y$j9T$" + salt
-
-	h, err := yescrypt.Hash([]byte(C.GoString(password)), []byte(setting))
+	hash, err := pyyescrypt.GenerateHash(C.GoString(password))
 	if err != nil {
 		if errOut != nil {
 			*errOut = C.CString(err.Error())
@@ -40,7 +31,7 @@ func yc_generate_hash(password *C.char, errOut **C.char) *C.char {
 		return nil
 	}
 
-	return C.CString(string(h))
+	return C.CString(hash)
 }
 
 //export yc_verify_hash
@@ -59,7 +50,7 @@ func yc_verify_hash(password *C.char, hash *C.char, validOut *C.int, errOut **C.
 	}
 
 	stored := C.GoString(hash)
-	nh, err := yescrypt.Hash([]byte(C.GoString(password)), []byte(stored))
+	ok, err := pyyescrypt.VerifyHash(C.GoString(password), stored)
 	if err != nil {
 		if errOut != nil {
 			*errOut = C.CString(err.Error())
@@ -68,7 +59,7 @@ func yc_verify_hash(password *C.char, hash *C.char, validOut *C.int, errOut **C.
 	}
 
 	if validOut != nil {
-		if string(nh) == stored {
+		if ok {
 			*validOut = 1
 		} else {
 			*validOut = 0
