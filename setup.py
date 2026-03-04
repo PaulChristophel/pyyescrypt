@@ -28,6 +28,7 @@ def _apply_macos_env(env: dict) -> None:
     env.setdefault("CXX", "clang++")
     env["CGO_CFLAGS"] = " ".join(part for part in (env.get("CGO_CFLAGS", ""), flag) if part).strip()
     env["CGO_LDFLAGS"] = " ".join(part for part in (env.get("CGO_LDFLAGS", ""), flag) if part).strip()
+    env["GO_LDFLAGS"] = " ".join(part for part in (env.get("GO_LDFLAGS", ""), f"-ldflags=-extldflags '{flag}'") if part).strip()
 
 
 def _go_exe() -> str:
