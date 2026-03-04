@@ -15,7 +15,7 @@ CLI_SUBDIR = "_cli"
 
 
 def _macos_target() -> str:
-    return os.environ.get("MACOSX_DEPLOYMENT_TARGET", "11.0")
+    return os.environ.get("MACOSX_DEPLOYMENT_TARGET", "12.0")
 
 
 def _apply_macos_env(env: dict) -> None:
@@ -26,9 +26,17 @@ def _apply_macos_env(env: dict) -> None:
     flag = f"-mmacosx-version-min={target}"
     env.setdefault("CC", "clang")
     env.setdefault("CXX", "clang++")
-    env["CGO_CFLAGS"] = " ".join(part for part in (env.get("CGO_CFLAGS", ""), flag) if part).strip()
-    env["CGO_LDFLAGS"] = " ".join(part for part in (env.get("CGO_LDFLAGS", ""), flag) if part).strip()
-    env["GO_LDFLAGS"] = " ".join(part for part in (env.get("GO_LDFLAGS", ""), f"-ldflags=-extldflags '{flag}'") if part).strip()
+    env["CGO_CFLAGS"] = " ".join(
+        part for part in (env.get("CGO_CFLAGS", ""), flag) if part
+    ).strip()
+    env["CGO_LDFLAGS"] = " ".join(
+        part for part in (env.get("CGO_LDFLAGS", ""), flag) if part
+    ).strip()
+    env["GO_LDFLAGS"] = " ".join(
+        part
+        for part in (env.get("GO_LDFLAGS", ""), f"-ldflags=-extldflags '{flag}'")
+        if part
+    ).strip()
 
 
 def _go_exe() -> str:
@@ -66,7 +74,16 @@ def _build_native_to(dir_path: Path) -> None:
     env["CGO_ENABLED"] = "1"
     _apply_macos_env(env)
     subprocess.check_call(
-        [go, "build", "-buildmode=c-shared", "-o", str(out_path), "./capi"],
+        [
+            go,
+            "build",
+            "-trimpath",
+            "-ldflags=-w -s",
+            "-buildmode=c-shared",
+            "-o",
+            str(out_path),
+            "./capi",
+        ],
         cwd=str(ROOT),
         env=env,
     )
@@ -80,7 +97,15 @@ def _build_cli_to(dir_path: Path) -> None:
     env = os.environ.copy()
     _apply_macos_env(env)
     subprocess.check_call(
-        [go, "build", "-o", str(out_path), "./cmd/pyyescrypt-cli"],
+        [
+            go,
+            "build",
+            "-trimpath",
+            "-ldflags=-w -s",
+            "-o",
+            str(out_path),
+            "./cmd/pyyescrypt-cli",
+        ],
         cwd=str(ROOT),
         env=env,
     )

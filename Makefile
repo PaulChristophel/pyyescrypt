@@ -3,7 +3,7 @@ SHELL := /bin/bash
 PY ?= python3
 GO ?= go
 VENV ?= .venv
-MACOSX_DEPLOYMENT_TARGET ?= 11.0
+MACOSX_DEPLOYMENT_TARGET ?= 12.0
 VENV_PY := $(VENV)/bin/python
 VENV_PIP := $(VENV)/bin/pip
 
@@ -38,11 +38,11 @@ venv:
 
 native:
 	mkdir -p "$(PKG_NATIVE_DIR)"
-	CGO_ENABLED=1 MACOSX_DEPLOYMENT_TARGET="$(MACOSX_DEPLOYMENT_TARGET)" $(GO) build -buildmode=c-shared -o "$(LIBOUT)" "$(CAPIDIR)"
+	CGO_ENABLED=1 MACOSX_DEPLOYMENT_TARGET="$(MACOSX_DEPLOYMENT_TARGET)" $(GO) build -trimpath -ldflags "-w -s" -buildmode=c-shared -o "$(LIBOUT)" "$(CAPIDIR)"
 
 cli:
 	mkdir -p "$(PKG_CLI_DIR)"
-	$(GO) build -o "$(CLI_BIN)" "./cmd/pyyescrypt-cli"
+	$(GO) build -trimpath -ldflags "-w -s" -o "$(CLI_BIN)" "./cmd/pyyescrypt-cli"
 
 py-build: venv
 	"$(VENV_PY)" -m pip install -q --upgrade build
