@@ -14,6 +14,24 @@ NATIVE_SUBDIR = "_native"
 CLI_SUBDIR = "_cli"
 
 
+def _macos_target() -> str:
+    return os.environ.get("MACOSX_DEPLOYMENT_TARGET", "11.0")
+
+
+def _apply_macos_env(env: dict) -> None:
+    if platform.system() != "Darwin":
+        return
+    target = _macos_target()
+    env["MACOSX_DEPLOYMENT_TARGET"] = target
+    extra = f"macos_version_min={target}"
+    current = env.get("GOEXPERIMENT", "")
+    experiments = [exp for exp in current.split(",") if exp]
+    if extra not in experiments:
+        experiments.append(extra)
+    if experiments:
+        env["GOEXPERIMENT"] = ",".join(experiments)
+
+
 def _go_exe() -> str:
     # Allow callers (cibuildwheel, CI, local) to pin an absolute path.
     go = os.environ.get("GO", "go")
@@ -47,7 +65,7 @@ def _build_native_to(dir_path: Path) -> None:
     go = _go_exe()
     env = os.environ.copy()
     env["CGO_ENABLED"] = "1"
-    env["MACOSX_DEPLOYMENT_TARGET"] = env.get("MACOSX_DEPLOYMENT_TARGET", "11.0")
+    _apply_macos_env(env)
     subprocess.check_call(
         [go, "build", "-buildmode=c-shared", "-o", str(out_path), "./capi"],
         cwd=str(ROOT),
@@ -61,7 +79,7 @@ def _build_cli_to(dir_path: Path) -> None:
 
     go = _go_exe()
     env = os.environ.copy()
-    env["MACOSX_DEPLOYMENT_TARGET"] = env.get("MACOSX_DEPLOYMENT_TARGET", "11.0")
+    _apply_macos_env(env)
     subprocess.check_call(
         [go, "build", "-o", str(out_path), "./cmd/pyyescrypt-cli"],
         cwd=str(ROOT),
