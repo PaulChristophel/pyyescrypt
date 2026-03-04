@@ -23,13 +23,9 @@ def _apply_macos_env(env: dict) -> None:
         return
     target = _macos_target()
     env["MACOSX_DEPLOYMENT_TARGET"] = target
-    extra = f"macos_version_min={target}"
-    current = env.get("GOEXPERIMENT", "")
-    experiments = [exp for exp in current.split(",") if exp]
-    if extra not in experiments:
-        experiments.append(extra)
-    if experiments:
-        env["GOEXPERIMENT"] = ",".join(experiments)
+    flag = f"-mmacosx-version-min={target}"
+    env["CGO_CFLAGS"] = f"{env.get('CGO_CFLAGS', '').strip()} {flag}".strip()
+    env["CGO_LDFLAGS"] = f"{env.get('CGO_LDFLAGS', '').strip()} {flag}".strip()
 
 
 def _go_exe() -> str:
