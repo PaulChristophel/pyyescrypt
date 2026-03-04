@@ -34,7 +34,7 @@ Errors raised from the native layer become `ValueError` in Python.
 ## Requirements
 
 - Go toolchain available on PATH
-- Python 3.9+ recommended (package metadata says 3.9+)
+- Python 3.10+ required
 - On macOS, Xcode Command Line Tools installed (`xcode-select --install`)
 
 ## Build the native library
