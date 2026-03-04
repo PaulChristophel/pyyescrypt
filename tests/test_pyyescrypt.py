@@ -9,8 +9,9 @@ import pytest
 if platform.system() == "Linux":
     libc_name, _ = platform.libc_ver()
     backend = os.environ.get("PYYESCRYPT_BACKEND", "").lower()
-    if libc_name == "musl" or backend == "cli":
-        pytest.skip("native backend unavailable on musl", allow_module_level=True)
+    audit_plat = os.environ.get("AUDITWHEEL_PLAT", "")
+    if libc_name == "musl" or "musllinux" in audit_plat or backend == "cli":
+        pytest.skip("native backend unavailable in this environment", allow_module_level=True)
 
 ROOT = Path(__file__).resolve().parents[1]
 
