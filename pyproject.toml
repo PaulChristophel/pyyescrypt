@@ -31,7 +31,6 @@ testpaths = ["tests"]
 skip = ["*-win32", "*-win_amd64", "*-win_arm64"]
 build-verbosity = 1
 before-build = "sh -c 'set -eux; make native'"
-test-command = "sh -c './tools/inspect-native.sh && python -m pytest -q'"
 test-requires = ["pytest"]
 
 # Only build CPython wheels

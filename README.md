@@ -24,6 +24,20 @@ ok = pyyescrypt.verify_hash("my password", hash_str)
 
 Errors raised from the native layer become `ValueError` in Python.
 
+## Command-line interface
+
+Installing `pyyescrypt` also provides a `pyyescrypt-cli` executable (packaged Go binary). It exposes the same operations as the Python module:
+
+```bash
+# Generate a hash (reads the password from stdin)
+printf "secret" | pyyescrypt-cli generate
+
+# Verify returns exit status 0 on success and prints "1"
+printf "secret" | pyyescrypt-cli verify --hash '$y$...'
+```
+
+The Python package automatically falls back to this CLI whenever the shared library cannot be loaded (for example on musl-based systems), and you can force it via `PYYESCRYPT_BACKEND=cli`.
+
 ## Repo layout
 
 - `capi/` Go code compiled as a C-shared library (`-buildmode=c-shared`)
