@@ -91,6 +91,7 @@ clean:
 	find "$(ROOT)" -depth -type f -name '*.dll' -delete
 	find "$(ROOT)" -depth -type f -name '*.dylib' -delete
 	find "$(ROOT)" -depth -type f -name '*.h' -delete
+	find "$(ROOT)" -depth -type f -name 'pyyescrypt-cli' -delete
 	find "$(ROOT)" -depth -type d -name '__pycache__' -ls -exec rm -rf {} \;
 	find "$(ROOT)" -depth -type d -name 'pyyescrypt.egg-info' -ls -exec rm -rf {} \;
 	find "$(ROOT)" -depth -maxdepth 1 -type d -name 'dist' -ls -exec rm -rf {} \;
