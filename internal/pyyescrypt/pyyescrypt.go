@@ -45,7 +45,7 @@ func generateSaltCryptoRand(length int) (string, error) {
 		return "", err
 	}
 	out := make([]byte, length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		out[i] = b64Chars[int(buf[i])%len(b64Chars)]
 	}
 	return string(out), nil
