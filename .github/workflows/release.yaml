@@ -42,7 +42,7 @@ jobs:
           # Linux builds happen in a container. Install Go in the container.
           CIBW_BEFORE_ALL_LINUX: |
             set -euo pipefail
-            GO_VER="1.26.1"
+            GO_VER="1.26.2"
             ARCH="$(uname -m)"
             case "$ARCH" in
               x86_64) GO_ARCH="amd64" ;;
