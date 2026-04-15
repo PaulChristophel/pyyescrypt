@@ -1,5 +1,6 @@
 import ctypes
 import sys
+from contextlib import contextmanager
 from importlib import resources
 
 
@@ -38,11 +39,11 @@ def _load_lib() -> ctypes.CDLL:
 
 _lib = _load_lib()
 
-_lib.yc_generate_hash.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p)]
+_lib.yc_generate_hash.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_void_p)]
 _lib.yc_generate_hash.restype = ctypes.c_void_p
 
 _lib.yc_verify_hash.argtypes = [
-    ctypes.c_char_p,
+    ctypes.c_void_p,
     ctypes.c_char_p,
     ctypes.POINTER(ctypes.c_int),
     ctypes.POINTER(ctypes.c_void_p),
@@ -51,6 +52,18 @@ _lib.yc_verify_hash.restype = ctypes.c_int
 
 _lib.yc_free.argtypes = [ctypes.c_void_p]
 _lib.yc_free.restype = None
+
+
+@contextmanager
+def _password_buffer(password: str):
+    """Provide a writable NUL-terminated password buffer and scrub it on exit."""
+    data = bytearray(password, "utf-8")
+    data.append(0)
+    buf = (ctypes.c_char * len(data)).from_buffer(data)
+    try:
+        yield ctypes.cast(buf, ctypes.c_void_p)
+    finally:
+        ctypes.memset(ctypes.addressof(buf), 0, len(data))
 
 
 def _raise_if_err(err_ptr: ctypes.c_void_p) -> None:
@@ -83,7 +96,8 @@ def generate_hash(password: str) -> str:
         RuntimeError: If the native function returns NULL without an error.
     """
     err = ctypes.c_void_p()
-    ptr = _lib.yc_generate_hash(password.encode("utf-8"), ctypes.byref(err))
+    with _password_buffer(password) as password_buf:
+        ptr = _lib.yc_generate_hash(password_buf, ctypes.byref(err))
     _raise_if_err(err)
 
     if not ptr:
@@ -112,12 +126,13 @@ def verify_hash(password: str, hash_str: str) -> bool:
     err = ctypes.c_void_p()
     valid = ctypes.c_int(0)
 
-    ok = _lib.yc_verify_hash(
-        password.encode("utf-8"),
-        hash_str.encode("utf-8"),
-        ctypes.byref(valid),
-        ctypes.byref(err),
-    )
+    with _password_buffer(password) as password_buf:
+        ok = _lib.yc_verify_hash(
+            password_buf,
+            hash_str.encode("utf-8"),
+            ctypes.byref(valid),
+            ctypes.byref(err),
+        )
     _raise_if_err(err)
 
     if ok != 1:

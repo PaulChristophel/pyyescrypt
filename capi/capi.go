@@ -2,6 +2,7 @@ package main
 
 /*
 #include <stdlib.h>
+#include <string.h>
 */
 import "C"
 
@@ -23,7 +24,7 @@ func yc_generate_hash(password *C.char, errOut **C.char) *C.char {
 		return nil
 	}
 
-	hash, err := pyyescrypt.GenerateHash(C.GoString(password))
+	hash, err := pyyescrypt.GenerateHashBytes(cPasswordBytes(password))
 	if err != nil {
 		if errOut != nil {
 			*errOut = C.CString(err.Error())
@@ -50,7 +51,7 @@ func yc_verify_hash(password *C.char, hash *C.char, validOut *C.int, errOut **C.
 	}
 
 	stored := C.GoString(hash)
-	ok, err := pyyescrypt.VerifyHash(C.GoString(password), stored)
+	ok, err := pyyescrypt.VerifyHashBytes(cPasswordBytes(password), stored)
 	if err != nil {
 		if errOut != nil {
 			*errOut = C.CString(err.Error())
@@ -73,6 +74,14 @@ func yc_free(p unsafe.Pointer) {
 	if p != nil {
 		C.free(p)
 	}
+}
+
+func cPasswordBytes(password *C.char) []byte {
+	length := C.strlen(password)
+	if length == 0 {
+		return []byte{}
+	}
+	return C.GoBytes(unsafe.Pointer(password), C.int(length))
 }
 
 func main() {}

@@ -249,3 +249,6 @@ go.work.sum
 # .idea/
 # .vscode/
 src/pyyescrypt/_cli/pyyescrypt-cli
+
+.gocache
+.gomodcache

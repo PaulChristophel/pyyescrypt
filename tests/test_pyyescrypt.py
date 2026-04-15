@@ -41,11 +41,11 @@ def _load_raw():
 
     lib = ctypes.CDLL(str(p))
 
-    lib.yc_generate_hash.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_void_p)]
+    lib.yc_generate_hash.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_void_p)]
     lib.yc_generate_hash.restype = ctypes.c_void_p
 
     lib.yc_verify_hash.argtypes = [
-        ctypes.c_char_p,
+        ctypes.c_void_p,
         ctypes.c_char_p,
         ctypes.POINTER(ctypes.c_int),
         ctypes.POINTER(ctypes.c_void_p),
@@ -168,3 +168,31 @@ def test_parallel_calls_smoke() -> None:
         results = list(ex.map(worker, range(50)))
 
     assert all(results)
+
+
+def test_password_buffer_scrubs_contents(monkeypatch) -> None:
+    import ctypes
+
+    sys.modules.pop("pyyescrypt", None)
+    sys.modules.pop("pyyescrypt._native", None)
+    import pyyescrypt._native as native
+
+    original_memset = native.ctypes.memset
+    scrubbed = {}
+
+    def recording_memset(addr, value, size):
+        result = original_memset(addr, value, size)
+        scrubbed["addr"] = addr
+        scrubbed["size"] = size
+        scrubbed["bytes"] = bytes((ctypes.c_ubyte * size).from_address(addr))
+        return result
+
+    monkeypatch.setattr(native.ctypes, "memset", recording_memset)
+
+    with native._password_buffer("s3cr3t") as password_buf:
+        raw = ctypes.string_at(password_buf.value, len("s3cr3t") + 1)
+        assert raw == b"s3cr3t\x00"
+
+    assert scrubbed["addr"] == password_buf.value
+    assert scrubbed["size"] == len("s3cr3t") + 1
+    assert scrubbed["bytes"] == b"\x00" * (len("s3cr3t") + 1)

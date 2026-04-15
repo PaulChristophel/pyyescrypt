@@ -94,6 +94,8 @@ clean:
 	find "$(ROOT)" -depth -type f -name 'pyyescrypt-cli' -delete
 	find "$(ROOT)" -depth -type d -name '__pycache__' -ls -exec rm -rf {} \;
 	find "$(ROOT)" -depth -type d -name 'pyyescrypt.egg-info' -ls -exec rm -rf {} \;
+	find "$(ROOT)" -depth -maxdepth 1 -type d -name '.gocache' -ls -exec rm -rf {} \;
+	find "$(ROOT)" -depth -maxdepth 1 -type d -name '.gomodcache' -ls -exec rm -rf {} \;
 	find "$(ROOT)" -depth -maxdepth 1 -type d -name 'dist' -ls -exec rm -rf {} \;
 	find "$(ROOT)" -depth -maxdepth 1 -type d -name 'build' -ls -exec rm -rf {} \;
 	find "$(ROOT)" -depth -maxdepth 1 -type d -name '.venv' -ls -exec rm -rf {} \;
