@@ -71,12 +71,15 @@ wheel-test: native cli venv
 	"$(VENV_PIP)" install -q --force-reinstall dist/*.whl
 	"$(VENV_PY)" -c 'import pathlib, pyyescrypt as m; p=pathlib.Path(m.__file__).resolve().parent/"_native"; ex=list(p.glob("*")); print(p); print(ex); assert ex, "no native library in package _native dir"'
 
-fmt:
+fmt: fix
 	$(GO) fmt ./...
 	find . -type f -name '*py' -print0 | xargs -0 black
 
 lint:
 	golangci-lint run ./...
+
+fix:
+	$(GO) fix ./...
 
 tidy:
 	$(GO) mod tidy
