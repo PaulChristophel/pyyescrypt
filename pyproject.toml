@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68,<77", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,14 +8,14 @@ version = "0.1.19"
 description = "Python bindings for yescrypt using a tiny Go shared library"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "GPL-3.0-or-later" }
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
 
 [project.scripts]
 pyyescrypt-cli = "pyyescrypt._cli_launcher:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-license-files = ["LICENSE"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -30,11 +30,11 @@ testpaths = ["tests"]
 [tool.cibuildwheel]
 skip = ["*-win32", "*-win_amd64", "*-win_arm64"]
 build-verbosity = 1
-before-build = "sh -c 'set -eux; make native'"
 test-requires = ["pytest"]
 
-# Only build CPython wheels
-build = "cp311-* cp312-* cp313-* cp314-*"
+# Build one py3-none wheel per platform, then reuse it to test the available
+# CPython versions. requires-python supplies the minimum supported version.
+build = "cp3*-*"
 
 [tool.cibuildwheel.linux]
 # archs = ["x86_64", "aarch64"]

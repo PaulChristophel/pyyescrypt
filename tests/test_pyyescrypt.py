@@ -2,6 +2,7 @@ import os
 import platform
 import re
 import sys
+from importlib import resources
 from pathlib import Path
 
 import pytest
@@ -15,8 +16,6 @@ if platform.system() == "Linux":
             "native backend unavailable in this environment", allow_module_level=True
         )
 
-ROOT = Path(__file__).resolve().parents[1]
-
 
 def _default_libname() -> str:
     if sys.platform == "darwin":
@@ -26,14 +25,30 @@ def _default_libname() -> str:
     return "libyescrypt.so"
 
 
-def _repo_lib_path() -> Path:
-    return ROOT / "src" / "pyyescrypt" / "_native" / _default_libname()
+def _package_lib_path() -> Path:
+    """Find the native library in the package being tested.
+
+    Returns:
+        Path: Installed package library path, or the editable source path.
+    """
+    return Path(
+        str(resources.files("pyyescrypt").joinpath("_native", _default_libname()))
+    )
 
 
 def _load_raw():
+    """Load the tested package's library and configure its C function signatures.
+
+    Returns:
+        ctypes.CDLL: Native library handle for ABI tests.
+
+    Raises:
+        FileNotFoundError: If the installed package has no native library.
+        OSError: If the platform loader cannot load the native library.
+    """
     import ctypes
 
-    p = _repo_lib_path()
+    p = _package_lib_path()
     if not p.exists():
         raise FileNotFoundError(
             f"native library not found at {p}. Run `make native` first."

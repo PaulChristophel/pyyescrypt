@@ -112,6 +112,16 @@ to fail fast when the shared library is unavailable.
 ### Packaging
 The wheel must include the shared library under `pyyescrypt/_native/`.
 
+Wheels use `py3-none-<platform>` tags: they contain no CPython extension and
+have no Python-version-specific ABI. One wheel per OS, architecture, and libc
+target can be installed on Python 3.10 and later, including Python 3.15,
+without rebuilding for each Python minor version. They are not `any` wheels
+because the bundled Go shared library and CLI are platform specific.
+
+Cibuildwheel reuses each wheel across its available compatible CPython
+interpreters for testing. Installation compatibility with a newer interpreter
+does not replace running the tests on that interpreter.
+
 For local development, `make native` places the library in the repo tree where the tests expect it.
 
 To validate packaging, use a separate workflow:
