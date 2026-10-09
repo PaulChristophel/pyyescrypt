@@ -20,7 +20,7 @@ jobs:
 
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.14"
+          python-version: "3.15"
 
       - name: Install Go (runner)
         uses: actions/setup-go@v7
@@ -43,7 +43,7 @@ jobs:
           # Linux builds happen in a container. Install Go in the container.
           CIBW_BEFORE_ALL_LINUX: |
             set -euo pipefail
-            GO_VER="1.27.1"
+            GO_VER="1.27.2"
             ARCH="$(uname -m)"
             case "$ARCH" in
               x86_64) GO_ARCH="amd64" ;;
@@ -70,7 +70,7 @@ jobs:
 
       - uses: actions/setup-python@v7
         with:
-          python-version: "3.14"
+          python-version: "3.15"
 
       - name: Install Go
         uses: actions/setup-go@v6
