@@ -4,7 +4,7 @@ import subprocess
 import shutil
 from pathlib import Path
 
-from setuptools import setup
+from setuptools import Distribution, setup
 from setuptools.command.bdist_wheel import bdist_wheel as _bdist_wheel
 from setuptools.command.build_py import build_py as _build_py
 
@@ -188,6 +188,18 @@ class build_py(_build_py):
         super().run()
 
 
+class BinaryDistribution(Distribution):
+    """Install bundled native binaries into platlib rather than purelib."""
+
+    def has_ext_modules(self):
+        """Declare native code even though it does not use the CPython C API.
+
+        Returns:
+            bool: True because the distribution contains Go binaries.
+        """
+        return True
+
+
 class bdist_wheel(_bdist_wheel):
     """Package ctypes binaries without depending on a Python extension ABI."""
 
@@ -211,5 +223,6 @@ class bdist_wheel(_bdist_wheel):
 
 
 setup(
+    distclass=BinaryDistribution,
     cmdclass={"build_py": build_py, "bdist_wheel": bdist_wheel},
 )
